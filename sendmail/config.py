@@ -10,4 +10,4 @@ class config:
 	darcsweb_url = "http://darcs.frugalware.org/darcsweb/darcsweb.cgi"
 	# if false, then the mail will be printed to stdout and no mail will be
 	# sent
-	send = False
+	send = True
