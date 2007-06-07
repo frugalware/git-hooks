@@ -54,10 +54,14 @@ class Hook:
 		sock.close()
 
 if __name__ == "__main__":
-	from config import config
-	for i in config.enabled_plugins:
+	from config import config as myconfig
+	for i in myconfig.enabled_plugins:
 		s = "%s.%s" % (i, i)
 		plugin = __import__(s)
 		for j in s.split(".")[1:]:
 			plugin = getattr(plugin, j)
-		hook = Hook(plugin.config.dir, plugin.config.latestfile, plugin.callback)
+		s = "%s.config" % i
+		config = __import__(s)
+		for j in s.split(".")[1:]:
+			config = getattr(config, j)
+		hook = Hook(config.config.dir, config.config.latestfile, plugin.callback)
