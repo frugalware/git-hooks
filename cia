@@ -1,0 +1,158 @@
+#!/usr/bin/env python
+
+import os, gzip, time, re, xmlrpclib
+from xml.dom import minidom
+from xml.sax import saxutils
+
+class Hook:
+	def __init__(self, dir, latestfile, callback):
+		self.dir = dir
+		self.latestfile = latestfile
+		self.callback = callback
+
+		try:
+			os.stat(dir)
+		except OSError:
+			os.makedirs(dir)
+
+		try:
+			sock = open(os.path.join(self.dir, self.latestfile), "r")
+		except IOError:
+			sock = None
+
+		if not sock:
+			xmldoc = self.getxml("darcs chan --last 1 --xml-output")
+
+			hash = xmldoc.getElementsByTagName('patch')[0].attributes['hash'].firstChild.toxml()
+			self.puthash(hash)
+		else:
+			oldhash = sock.read().strip()
+			sock.close()
+
+			xmldoc = self.getxml('darcs chan --from-match "hash %s" --xml-output' % oldhash)
+
+			counter = 0
+			for i in xmldoc.getElementsByTagName('patch'):
+				if counter >= len(xmldoc.getElementsByTagName('patch'))-1:
+					break
+				self.callback(i)
+				counter += 1
+
+			hash = xmldoc.getElementsByTagName('patch')[0].attributes['hash'].firstChild.toxml()
+			self.puthash(hash)
+
+	def getxml(self, cmd):
+		sock = os.popen(cmd)
+		xmldata = "".join(sock.readlines())
+		sock.close()
+		xmldoc = minidom.parseString(xmldata)
+		return xmldoc
+
+	def puthash(self, hash):
+		sock = open(os.path.join(self.dir, self.latestfile), "w")
+		sock.write("%s\n" % hash)
+		sock.close()
+
+__version__ = "0.1.0"
+__url__ = "http://ftp.frugalware.org/pub/other/darcs-hooks"
+
+class config:
+	dir = os.path.join("_darcs", "third-party", "cia")
+	latestfile = "latest"
+	project = "Frugalware"
+	# just set this to None if you don't need this
+	darcsweb_url = "http://darcs.frugalware.org/darcsweb/darcsweb.cgi"
+	rpc_uri = "http://cia.vc"
+	# if false, then the mail will be printed to stdout and no xml-rpc post
+	# will be performed
+	post = False
+
+def getpatch(hash):
+	sock = gzip.GzipFile(os.path.join("_darcs", "patches", "%s") % hash)
+	data = sock.readlines()
+	sock.close()
+	return data
+
+def sendpatch(patch):
+	global config
+	files = []
+	repo = os.path.split(os.getcwd())[-1]
+	patchname = patch.getElementsByTagName("name")[0].firstChild.toxml()
+	try:
+		patchlog = patch.getElementsByTagName("comment")[0].firstChild.toxml()
+	except IndexError:
+		patchlog = None
+	hash = saxutils.unescape(patch.attributes['hash'].firstChild.toxml())
+	if patchlog:
+		log = "* %s\n%s" % (patchname, patchlog)
+	else:
+		log = "* %s" % patchname
+	url = ""
+	if config.darcsweb_url:
+		url = "<url>%s?r=%s;a=darcs_commitdiff;h=%s;</url>" % (config.darcsweb_url, repo, hash)
+
+	patchdata = getpatch(hash)
+	for i in patchdata:
+		i = i.strip().replace("./", "")
+		if i.startswith("adddir "):
+			files.append(re.sub(r"^adddir (.*)", r"\1", i))
+		elif i.startswith("addfile "):
+			files.append(re.sub(r"^addfile (.*)", r"\1", i))
+		elif i.startswith("rmdir "):
+			files.append(re.sub(r"^rmdir (.*)", r"\1", i))
+		elif i.startswith("rmfile "):
+			files.append(re.sub(r"^rmfile (.*)", r"\1", i))
+		elif i.startswith("binary "):
+			files.append(re.sub(r"^binary (.*)", r"\1", i))
+		elif i.startswith("hunk "):
+			files.append(re.sub(r"^hunk (.*) [0-9]+", r"\1", i))
+		elif i.startswith("move "):
+			files.append(re.sub(r"^move (.*) .*", r"\1", i))
+			files.append(re.sub(r"^move .* (.*)", r"\1", i))
+	# remove duplicates. it does not preserve the order but that's not a
+	# problem here
+	set = {}
+	map(set.__setitem__, files, [])
+	files = set.keys()
+
+	msg = """<?xml version="1.0" ?>
+<message>
+	<generator>
+		<name>CIA plugin for for darcs-hooks.py</name>
+		<version>%(version)s</version>
+		<url>http://ftp.frugalware.org/pub/other/darcs-hooks</url>
+	</generator>
+	<source>
+		<project>%(project)s</project>
+		<module>%(module)s</module>
+	</source>
+	<timestamp>%(timestamp)s</timestamp>
+	<body>
+		<commit>
+			<author>%(author)s</author>
+			<files>
+				<file>%(files)s</file>
+			</files>
+			<log>%(log)s</log>
+			%(url)s
+		</commit>
+	</body>
+</message>
+	""" % {
+		'version': __version__,
+		'project': config.project,
+		'module': repo,
+		'timestamp': str(int(time.time())),
+		'author': patch.attributes['author'].firstChild.toxml(),
+		'files': "</file>\n<file>".join(files),
+		'log': log,
+		'url': url
+	}
+
+	if config.post:
+		xmlrpclib.ServerProxy(config.rpc_uri).hub.deliver(msg)
+	else:
+		print msg
+
+if __name__ == "__main__":
+	hook = Hook(config.dir, config.latestfile, sendpatch)
