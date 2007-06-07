@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: iso-8859-2 -*-
 
 import os, sys, gzip, time, re, xmlrpclib
 from xml.dom import minidom
@@ -29,7 +30,7 @@ class Hook:
 			oldhash = sock.read().strip()
 			sock.close()
 
-			xmldoc = self.getxml('darcs chan --from-match "hash %s" --xml-output' % oldhash)
+			xmldoc = self.getxml('DARCS_DONT_ESCAPE_ISPRINT=1 darcs chan --from-match "hash %s" --xml-output' % oldhash)
 
 			counter = 0
 			for i in xmldoc.getElementsByTagName('patch'):
@@ -45,8 +46,19 @@ class Hook:
 		sock = os.popen(cmd)
 		xmldata = "".join(sock.readlines())
 		sock.close()
-		xmldoc = minidom.parseString(xmldata)
+		xmldoc = minidom.parseString(self.unaccent(xmldata))
 		return xmldoc
+
+	def unaccent(self, s):
+		ret = []
+		fro = "¡…Õ”÷’⁄‹€·ÈÌÛˆı˙¸˚"
+		to = "AEIOOOUUUaeiooouuu"
+		for i in s:
+			if i in fro:
+				ret.append(to[fro.index(i)])
+			else:
+				ret.append(i)
+		return "".join(ret)
 
 	def puthash(self, hash):
 		sock = open(os.path.join(self.dir, self.latestfile), "w")

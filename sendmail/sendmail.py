@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: iso-8859-2 -*-
 
 import os, gzip, smtplib
 from xml.dom import minidom
@@ -7,9 +8,20 @@ from config import config
 
 def getpatch(hash):
 	sock = gzip.GzipFile(os.path.join("_darcs", "patches", "%s") % hash)
-	data = "".join(sock.readlines())
+	data = unaccent("".join(sock.readlines()))
 	sock.close()
 	return data
+
+def unaccent(s):
+	ret = []
+	fro = "ÁÉÍÓÖÕÚÜÛáéíóöõúüû"
+	to = "AEIOOOUUUaeiooouuu"
+	for i in s:
+		if i in fro:
+			ret.append(to[fro.index(i)])
+		else:
+			ret.append(i)
+	return "".join(ret)
 
 def callback(patch):
 	global config
