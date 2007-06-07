@@ -54,6 +54,10 @@ class Hook:
 		sock.close()
 
 if __name__ == "__main__":
-	from sendmail.sendmail import config
-	from sendmail.sendmail import callback
-	hook = Hook(config.dir, config.latestfile, callback)
+	from config import config
+	for i in config.enabled_plugins:
+		s = "%s.%s" % (i, i)
+		plugin = __import__(s)
+		for j in s.split(".")[1:]:
+			plugin = getattr(plugin, j)
+		hook = Hook(plugin.config.dir, plugin.config.latestfile, plugin.callback)
