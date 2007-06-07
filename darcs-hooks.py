@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, gzip, time, re, xmlrpclib
+import os, sys, gzip, time, re, xmlrpclib
 from xml.dom import minidom
 from xml.sax import saxutils
 
@@ -54,6 +54,8 @@ class Hook:
 		sock.close()
 
 if __name__ == "__main__":
+	sys.path.append("/etc/darcs-hooks")
+	sys.path.append("/usr/share/darcs-hooks")
 	from config import config as myconfig
 	for i in myconfig.enabled_plugins:
 		s = "%s.%s" % (i, i)
