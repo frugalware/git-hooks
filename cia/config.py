@@ -3,7 +3,7 @@
 import os
 
 class config:
-	dir = os.path.join("_darcs", "third-party", "cia")
+	dir = os.path.join("_darcs", "third_party", "cia")
 	latestfile = "latest"
 	project = "Frugalware"
 	# just set this to None if you don't need this
