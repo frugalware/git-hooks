@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, gzip, time, re, xmlrpclib
+import os, gzip, time, re, xmlrpclib, timeoutsocket
 from xml.sax import saxutils
 from config import config
 
@@ -90,6 +90,7 @@ def callback(patch):
 	}
 
 	if config.post:
+		timeoutsocket.setDefaultSocketTimeout(20)
 		xmlrpclib.ServerProxy(config.rpc_uri).hub.deliver(msg)
 	else:
 		print msg
