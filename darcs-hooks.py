@@ -78,4 +78,7 @@ if __name__ == "__main__":
 		config = __import__(s)
 		for j in s.split(".")[1:]:
 			config = getattr(config, j)
-		hook = Hook(config.config.dir, config.config.latestfile, plugin.callback)
+		try:
+			hook = Hook(config.config.dir, config.config.latestfile, plugin.callback)
+		except Exception, s:
+			print "Error, probably connect to CIA timed out."
