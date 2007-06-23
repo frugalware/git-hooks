@@ -5,62 +5,40 @@ from xml.sax import saxutils
 from config import config
 
 __version__ = "0.1.0"
-__url__ = "http://ftp.frugalware.org/pub/other/darcs-hooks"
+__url__ = "http://ftp.frugalware.org/pub/other/git-hooks"
 
-def getpatch(hash):
-	sock = gzip.GzipFile(os.path.join("_darcs", "patches", "%s") % hash)
-	data = sock.readlines()
+def readfrompipe(cmd):
+	sock = os.popen(cmd)
+	ret = sock.read().strip()
 	sock.close()
-	return data
+	return ret
 
 def callback(patch):
 	global config
-	files = []
-	repo = os.path.split(os.getcwd())[-1]
-	patchname = patch.getElementsByTagName("name")[0].firstChild.toxml()
-	try:
-		patchlog = patch.getElementsByTagName("comment")[0].firstChild.toxml()
-	except IndexError:
-		patchlog = None
-	hash = saxutils.unescape(patch.attributes['hash'].firstChild.toxml())
-	if patchlog:
-		log = "* %s\n%s" % (patchname, patchlog)
-	else:
-		log = "* %s" % patchname
+	repo = os.getcwd().split("/")[-1]
+	if repo == ".git":
+		repo = os.getcwd().split("/")[-2]
 	url = ""
-	if config.darcsweb_url:
-		url = "<url>%s?r=%s;a=darcs_commitdiff;h=%s;</url>" % (config.darcsweb_url, repo, hash)
-
-	patchdata = getpatch(hash)
-	for i in patchdata:
-		i = i.strip().replace("./", "")
-		if i.startswith("adddir "):
-			files.append(re.sub(r"^adddir (.*)", r"\1", i))
-		elif i.startswith("addfile "):
-			files.append(re.sub(r"^addfile (.*)", r"\1", i))
-		elif i.startswith("rmdir "):
-			files.append(re.sub(r"^rmdir (.*)", r"\1", i))
-		elif i.startswith("rmfile "):
-			files.append(re.sub(r"^rmfile (.*)", r"\1", i))
-		elif i.startswith("binary "):
-			files.append(re.sub(r"^binary (.*)", r"\1", i))
-		elif i.startswith("hunk "):
-			files.append(re.sub(r"^hunk (.*) [0-9]+", r"\1", i))
-		elif i.startswith("move "):
-			files.append(re.sub(r"^move (.*) .*", r"\1", i))
-			files.append(re.sub(r"^move .* (.*)", r"\1", i))
-	# remove duplicates. it does not preserve the order but that's not a
-	# problem here
-	set = {}
-	map(set.__setitem__, files, [])
-	files = set.keys()
+	if config.gitweb_url:
+		url = "<url>%s?p=%s;a=commitdiff;h=%s</url>" % (config.gitweb_url, repo, patch)
+	refname = "master"
+	rev = patch[:12]
+	raw = readfrompipe("git cat-file commit " + patch)
+	for i in raw.split("\n"):
+		if i.startswith("author "):
+			author = " ".join(i[len("author "):].split(" ")[:-2])
+			ts = i[len("author "):].split(" ")[-2]
+	logmessage = raw.split("\n\n")[1]
+	files = []
+	for i in readfrompipe("git diff-tree -r --name-only " + patch).split("\n")[1:]:
+		files.append("<file>%s</file>" % i.strip())
 
 	msg = """<?xml version="1.0" ?>
 <message>
 	<generator>
-		<name>CIA plugin for for darcs-hooks.py</name>
+		<name>CIA plugin for for git-hooks.py</name>
 		<version>%(version)s</version>
-		<url>http://ftp.frugalware.org/pub/other/darcs-hooks</url>
+		<url>%(url)s</url>
 	</generator>
 	<source>
 		<project>%(project)s</project>
@@ -70,23 +48,26 @@ def callback(patch):
 	<body>
 		<commit>
 			<author>%(author)s</author>
+			<revision>%(revision)s</revision>
 			<files>
-				<file>%(files)s</file>
+				%(files)s
 			</files>
 			<log>%(log)s</log>
-			%(url)s
+			%(purl)s
 		</commit>
 	</body>
 </message>
 	""" % {
 		'version': __version__,
+		'url': __url__,
 		'project': config.project,
 		'module': repo,
-		'timestamp': str(int(time.time())),
-		'author': patch.attributes['author'].firstChild.toxml(),
-		'files': "</file>\n<file>".join(files),
-		'log': log,
-		'url': url
+		'timestamp': ts,
+		'author': author,
+		'revision': rev,
+		'files': "\n".join(files),
+		'log': logmessage,
+		'purl': url
 	}
 
 	if config.post:
@@ -94,6 +75,3 @@ def callback(patch):
 		xmlrpclib.ServerProxy(config.rpc_uri).hub.deliver(msg)
 	else:
 		print msg
-
-if __name__ == "__main__":
-	hook = Hook(config.dir, config.latestfile, sendpatch)
