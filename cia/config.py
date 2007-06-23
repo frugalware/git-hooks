@@ -9,4 +9,4 @@ class config:
 	rpc_uri = "http://cia.vc"
 	# if false, then the mail will be printed to stdout and no xml-rpc post
 	# will be performed
-	post = True
+	post = False
