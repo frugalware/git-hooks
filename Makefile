@@ -1,4 +1,4 @@
-# Makefile for darcs-hooks
+# Makefile for git-hooks
 #
 # Copyright (C) 2007 Miklos Vajna <vmiklos@frugalware.org>
 #
@@ -21,15 +21,15 @@ VERSION = 0.1.0
 INSTALL = /usr/bin/install -c
 DESTDIR =
 bindir = /usr/bin
-sysconfdir = /etc/darcs-hooks
-shareddir = /usr/share/darcs-hooks
+sysconfdir = /etc/git-hooks
+shareddir = /usr/share/git-hooks
 
 compile:
 
 install:
 	$(INSTALL) -d $(DESTDIR)$(bindir)
 	$(INSTALL) -d $(DESTDIR)$(sysconfdir)
-	$(INSTALL) darcs-hooks.py $(DESTDIR)$(bindir)/darcs-hooks
+	$(INSTALL) git-hooks.py $(DESTDIR)$(bindir)/git-hooks
 	$(INSTALL) -m644 config.py $(DESTDIR)$(sysconfdir)
 	for i in *; do \
 		[ ! -d $$i ] && continue; \
@@ -41,15 +41,3 @@ install:
 	done
 
 clean:
-
-dist:
-	darcs changes >_darcs/pristine/Changelog
-	darcs dist -d darcs-hooks-$(VERSION)
-	gpg --comment "See http://ftp.frugalware.org/pub/README.GPG for info" \
-		-ba -u 20F55619 darcs-hooks-$(VERSION).tar.gz
-	mv darcs-hooks-$(VERSION).tar.gz{,.asc} ../
-	rm _darcs/pristine/Changelog
-
-release:
-	darcs tag --checkpoint $(VERSION)
-	$(MAKE) dist
