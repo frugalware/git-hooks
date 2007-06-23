@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: iso-8859-2 -*-
 
 import os, gzip, time, re, xmlrpclib, timeoutsocket
 from xml.sax import saxutils
@@ -6,6 +7,17 @@ from config import config
 
 __version__ = "0.1.0"
 __url__ = "http://ftp.frugalware.org/pub/other/git-hooks"
+
+def unaccent(s):
+	ret = []
+	fro = "ÁÉÍÓÖÕÚÜÛáéíóöõúüû"
+	to = "AEIOOOUUUaeiooouuu"
+	for i in s:
+		if i in fro:
+			ret.append(to[fro.index(i)])
+		else:
+			ret.append(i)
+	return "".join(ret)
 
 def readfrompipe(cmd):
 	sock = os.popen(cmd)
@@ -26,7 +38,7 @@ def callback(patch):
 	raw = readfrompipe("git cat-file commit " + patch)
 	for i in raw.split("\n"):
 		if i.startswith("author "):
-			author = " ".join(i[len("author "):].split(" ")[:-2])
+			author = unaccent(" ".join(i[len("author "):].split(" ")[:-2]))
 			ts = i[len("author "):].split(" ")[-2]
 	logmessage = raw.split("\n\n")[1]
 	files = []
