@@ -1,43 +1,32 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-2 -*-
 
-import os, gzip, smtplib
-from xml.dom import minidom
-from xml.sax import saxutils
+import os, smtplib
 from config import config
 
-def getpatch(hash):
-	sock = gzip.GzipFile(os.path.join("_darcs", "patches", "%s") % hash)
-	data = unaccent("".join(sock.readlines()))
-	sock.close()
-	return data
-
-def unaccent(s):
-	ret = []
-	fro = "¡…Õ”÷’⁄‹€·ÈÌÛˆı˙¸˚"
-	to = "AEIOOOUUUaeiooouuu"
-	for i in s:
-		if i in fro:
-			ret.append(to[fro.index(i)])
-		else:
-			ret.append(i)
-	return "".join(ret)
-
-def callback(patch):
+def callback(hash):
 	global config
 	msg = []
-	repo = os.path.split(os.getcwd())[-1]
-	patchname = patch.getElementsByTagName("name")[0].firstChild.toxml()
-	hash = saxutils.unescape(patch.attributes['hash'].firstChild.toxml())
-
-	fro = saxutils.unescape(patch.attributes['author'].firstChild.toxml())
+	repo = os.getcwd().split("/")[-1]
+	if repo == ".git":
+		repo = os.getcwd().split("/")[-2]
+	sock = os.popen('git log -1 --pretty=format:"%s" ' + hash)
+	name = sock.read()
+	sock.close()
+	sock = os.popen('git log -1 --pretty=format:"%an <%ae>" ' + hash)
+	fro = sock.read()
+	sock.close()
 	to = config.dest
-	subject = "%s: %s" % (repo, patchname)
+	subject = "%s: %s" % (repo, name)
 	msg.append("From: %s \nTo: %s\nSubject: %s\n" % (fro, to, subject))
 
-	if config.darcsweb_url:
-		msg.append("Darcsweb-Url: %s?r=%s;a=darcs_commitdiff;h=%s;\n" % (config.darcsweb_url, repo, hash))
-	msg.append(getpatch(hash))
+	if config.gitweb_url:
+		msg.append("Git-Url: %s/?p=%s;a=commitdiff;h=%s\n" % (config.gitweb_url, repo, hash))
+	sock = os.popen("git show " + hash)
+	lines = []
+	for i in sock.readlines():
+		lines.append(i.strip())
+	msg.extend(lines)
+	sock.close()
 
 	if config.send:
 		server = smtplib.SMTP('localhost')
@@ -45,6 +34,3 @@ def callback(patch):
 		server.quit()
 	else:
 		print "\n".join(msg)
-
-if __name__ == "__main__":
-	hook = Hook(config.dir, config.latestfile, sendpatch)
