@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-2 -*-
 
-import os, gzip, time, re, xmlrpclib, timeoutsocket
+import os, xmlrpclib, timeoutsocket, cgi
 from xml.sax import saxutils
 from config import config
 
@@ -38,7 +38,7 @@ def callback(patch):
 	raw = readfrompipe("git cat-file commit " + patch)
 	for i in raw.split("\n"):
 		if i.startswith("author "):
-			author = unaccent(" ".join(i[len("author "):].split(" ")[:-2]))
+			author = cgi.escape(unaccent(" ".join(i[len("author "):].split(" ")[:-2])))
 			ts = i[len("author "):].split(" ")[-2]
 	logmessage = raw.split("\n\n")[1]
 	files = []
