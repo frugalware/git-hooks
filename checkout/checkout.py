@@ -11,5 +11,6 @@ def callback(patch):
 		return
 	first = True
 	os.chdir("..")
-	del os.environ['GIT_DIR']
+	if "GIT_DIR" in os.environ.keys():
+		del os.environ['GIT_DIR']
 	os.system("git checkout -f")
