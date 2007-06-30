@@ -9,7 +9,7 @@ def callback(patch):
 
 	if not first:
 		return
-	first = True
+	first = False
 	os.chdir("..")
 	if "GIT_DIR" in os.environ.keys():
 		del os.environ['GIT_DIR']
