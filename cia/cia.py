@@ -32,7 +32,7 @@ def callback(patch):
 		repo = os.getcwd().split("/")[-2]
 	url = ""
 	if config.gitweb_url:
-		url = "<url>%s?p=%s;a=commitdiff;h=%s</url>" % (config.gitweb_url, repo, patch)
+		url = "<url>%s?p=%s/.git;a=commitdiff;h=%s</url>" % (config.gitweb_url, repo, patch)
 	refname = "master"
 	rev = patch[:12]
 	raw = readfrompipe("git cat-file commit " + patch)
