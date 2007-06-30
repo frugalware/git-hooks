@@ -60,7 +60,7 @@ def callback(patch):
 	<body>
 		<commit>
 			<author>%(author)s</author>
-			<revision>%(revision)s</revision>
+			<!-- <revision>%(revision)s</revision> -->
 			<files>
 				%(files)s
 			</files>
