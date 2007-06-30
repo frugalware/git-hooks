@@ -8,4 +8,4 @@ class config:
 	gitweb_url = "http://git.frugalware.org/gitweb/gitweb.cgi"
 	# if false, then the mail will be printed to stdout and no mail will be
 	# sent
-	send = False
+	send = True
