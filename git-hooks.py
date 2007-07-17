@@ -3,6 +3,8 @@
 import os, sys
 
 def run_hook(callback, old, new):
+	if old == "0000000000000000000000000000000000000000":
+		sys.exit(0)
 	sock = os.popen("git rev-list --no-merges %s..%s" % (old, new))
 	hashes = sock.readlines()
 	sock.close()
