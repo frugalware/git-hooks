@@ -84,6 +84,9 @@ def callback(patch):
 
 	if config.post:
 		timeoutsocket.setDefaultSocketTimeout(20)
-		xmlrpclib.ServerProxy(config.rpc_uri).hub.deliver(msg)
+		try:
+			xmlrpclib.ServerProxy(config.rpc_uri).hub.deliver(msg)
+		except timeoutsocket.Timeout:
+			print "Not notifying CIA, connection timed out."
 	else:
 		print msg
