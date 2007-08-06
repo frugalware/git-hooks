@@ -49,5 +49,4 @@ def callback(patch):
 		if re.match("^source/[^/]+/[^/]+/FrugalBuild$", i):
 			for j in tobuild(i):
 				pkgs.append("git://%s/%s" % (repo.replace("frugalware-", ""), j))
-	print "[DEBUG] synchook-git: %s" % pkgs
 	# TODO: xmlrpc call missing here
