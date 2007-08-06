@@ -48,5 +48,4 @@ def callback(patch):
 	for i in readfrompipe("git diff-tree -r --name-only " + patch).split("\n")[1:]:
 		if re.match("^source/[^/]+/[^/]+/FrugalBuild$", i):
 			for j in tobuild(i):
-				#server.request_build(config.server_user, config.server_pass, "git://%s/%s" % (repo.replace("frugalware-", ""), j))
-				pass
+				server.request_build(config.server_user, config.server_pass, "git://%s/%s" % (repo.replace("frugalware-", ""), j))
