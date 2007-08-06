@@ -44,9 +44,9 @@ def callback(patch):
 		repo = os.getcwd().split("/")[-2]
 	if repo not in config.repos:
 		return
-	pkgs = []
+	server = xmlrpclib.Server(config.server_url)
 	for i in readfrompipe("git diff-tree -r --name-only " + patch).split("\n")[1:]:
 		if re.match("^source/[^/]+/[^/]+/FrugalBuild$", i):
 			for j in tobuild(i):
-				pkgs.append("git://%s/%s" % (repo.replace("frugalware-", ""), j))
-	# TODO: xmlrpc call missing here
+				#server.request_build(config.server_user, config.server_pass, "git://%s/%s" % (repo.replace("frugalware-", ""), j))
+				pass
