@@ -14,6 +14,10 @@ def readfrompipe(cmd):
 
 def tobuild(pkg):
 	ret = []
+	try:
+		os.stat(os.path.split(pkg)[0])
+	except OSError:
+		return ret
 	# Build the command to read the FrugalBuilds
 	command = 'cd %s'
 	command += '; source /usr/lib/frugalware/fwmakepkg'
