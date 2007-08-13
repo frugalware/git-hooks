@@ -50,7 +50,8 @@ def callback(patch):
 	if repo not in config.repos:
 		return
 	server = xmlrpclib.Server(config.server_url)
+	author = readfrompipe('git show --pretty=format:"%an <%ae>" ' + patch).split("\n")[0]
 	for i in readfrompipe("git diff-tree -r --name-only " + patch).split("\n")[1:]:
 		if re.match("^source/[^/]+/[^/]+/FrugalBuild$", i):
 			for j in tobuild(i):
-				server.request_build(config.server_user, config.server_pass, "git://%s/%s" % (repo.replace("frugalware-", ""), j))
+				server.request_build(config.server_user, config.server_pass, "git://%s/%s/%s" % (repo.replace("frugalware-", ""), j, author))
