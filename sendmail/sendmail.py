@@ -20,7 +20,7 @@ def callback(hash):
 	msg.append("From: %s \nTo: %s\nSubject: %s\n" % (fro, to, subject))
 
 	if config.gitweb_url:
-		msg.append("Git-Url: %s?p=%s/.git;a=commitdiff;h=%s\n" % (config.gitweb_url, repo, hash))
+		msg.append("Git-Url: %s?p=%s.git;a=commitdiff;h=%s\n" % (config.gitweb_url, repo, hash))
 	sock = os.popen("git show " + hash)
 	lines = []
 	for i in sock.readlines():
