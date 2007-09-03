@@ -48,7 +48,7 @@ def callback(patch):
 	msg = """<?xml version="1.0" ?>
 <message>
 	<generator>
-		<name>CIA plugin for for git-hooks.py</name>
+		<name>CIA plugin for git-hooks.py</name>
 		<version>%(version)s</version>
 		<url>%(url)s</url>
 	</generator>
