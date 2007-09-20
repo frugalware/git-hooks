@@ -90,5 +90,7 @@ def callback(patch):
 			print "Not notifying CIA, connection timed out."
 		except xmlrpclib.ProtocolError, s:
 			print "Can't notify CIA (%s)" % s
+		except socket.gaierror, s:
+			print "Can't find the CIA server (/s)" % s
 	else:
 		print msg
