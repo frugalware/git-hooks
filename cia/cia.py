@@ -40,7 +40,7 @@ def callback(patch):
 		if i.startswith("author "):
 			author = cgi.escape(unaccent(" ".join(i[len("author "):].split(" ")[:-2])))
 			ts = i[len("author "):].split(" ")[-2]
-	logmessage = cgi.escape(raw.split("\n\n")[1])
+	logmessage = cgi.escape("\n\n".join(raw.split("\n\n")[1:]))
 	files = []
 	for i in readfrompipe("git diff-tree -r --name-only " + patch).split("\n")[1:]:
 		files.append("<file>%s</file>" % i.strip())
