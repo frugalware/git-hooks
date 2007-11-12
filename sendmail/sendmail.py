@@ -12,7 +12,7 @@ def callback(hash):
 	sock = os.popen('git log -1 --pretty=format:"%s" ' + hash)
 	name = sock.read()
 	sock.close()
-	sock = os.popen('git log -1 --pretty=format:"%an <%ae>" ' + hash)
+	sock = os.popen('git log -1 --pretty=format:"%cn <%ce>" ' + hash)
 	fro = sock.read()
 	sock.close()
 	to = config.dest
