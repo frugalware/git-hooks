@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-2 -*-
 
-import os, xmlrpclib, timeoutsocket, cgi
+import os, xmlrpclib, timeoutsocket, cgi, mxw
 from xml.sax import saxutils
 from config import config
 
@@ -81,6 +81,11 @@ def callback(patch):
 		'log': logmessage,
 		'purl': url
 	}
+
+	try:
+		mxw.sendCommit(msg, config.sockpath)
+	except Exception, s:
+			print "Can't notify mxw_ (%s)" % s
 
 	if config.post:
 		timeoutsocket.setDefaultSocketTimeout(20)

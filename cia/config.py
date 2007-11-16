@@ -10,3 +10,4 @@ class config:
 	# if false, then the mail will be printed to stdout and no xml-rpc post
 	# will be performed
 	post = True
+	sockpath = "/home/ftp/pub/other/people/vmiklos/mxw/mxw2.sock"
