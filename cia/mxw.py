@@ -86,7 +86,7 @@ def sendCommit(commitstr, sockpath):
 	for i in xml.getElementsByTagName('file'):
 		files.append(saxutils.unescape(i.firstChild.toxml()))
 	module = saxutils.unescape(xml.getElementsByTagName('module')[0].firstChild.toxml())
-	log = saxutils.unescape(xml.getElementsByTagName('log')[0].firstChild.toxml())
+	log = saxutils.unescape(xml.getElementsByTagName('log')[0].firstChild.toxml()).replace('&quot;', r'\"')
 	lines = []
 	lines.append("03%s * 10%s/%s:" % (author, module, handleFiles(files)))
 	lines.extend(log.split('\n'))
