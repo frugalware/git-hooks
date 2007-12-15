@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os
+import os, time
 
 first = True
 
@@ -13,4 +13,13 @@ def callback(patch):
 	os.chdir("..")
 	if "GIT_DIR" in os.environ.keys():
 		del os.environ['GIT_DIR']
-	os.system("git checkout -f")
+	limit = 300
+	for i in range(limit):
+		try:
+			os.stat(".git/index.lock")
+			print "Waiting for lock to be released to do a 'git checkout'"
+			time.sleep(1)
+		except OSError:
+			os.system("git checkout -f")
+			return
+	print "WARNING: Timeout exceeded, checkout failed!"
