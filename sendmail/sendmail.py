@@ -30,7 +30,10 @@ def callback(hash):
 
 	if config.send:
 		server = smtplib.SMTP('localhost')
-		server.sendmail(fro, to, "\n".join(msg))
+		try:
+			server.sendmail(fro, to, "\n".join(msg))
+		except Exception, s:
+				print "Can't send mail (%s)" % s
 		server.quit()
 	else:
 		print "\n".join(msg)
