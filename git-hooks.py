@@ -35,4 +35,7 @@ if __name__ == "__main__":
 		plugin = __import__(s)
 		for j in s.split(".")[1:]:
 			plugin = getattr(plugin, j)
-		run_hook(plugin.callback, old, new)
+		try:
+			run_hook(plugin.callback, old, new)
+		except Exception, s:
+				print "Can't run plugin '%s' (%s)" % (i, s)
