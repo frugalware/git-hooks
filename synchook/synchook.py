@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: iso-8859-2 -*-
 
 import os, xmlrpclib, re
 from config import config
@@ -42,6 +43,17 @@ def tobuild(pkg):
 			ret.append(full)
 	return ret
 
+def unaccent(s):
+	ret = []
+	fro = "ÁÉÍÓÖÕÚÜÛáéíóöõúüû"
+	to = "AEIOOOUUUaeiooouuu"
+	for i in s:
+		if i in fro:
+			ret.append(to[fro.index(i)])
+		else:
+			ret.append(i)
+	return "".join(ret)
+
 def callback(patch):
 	global config
 	repo = os.getcwd().split("/")[-1]
@@ -57,4 +69,11 @@ def callback(patch):
 				repo = repo.replace("frugalware-", "")
 				# hardwiring this is ugly
 				repo = repo.replace("0.7", "stable")
-				server.request_build(config.server_user, config.server_pass, "git://%s/%s/%s" % (repo, j, author))
+				server.request_build(config.server_user, config.server_pass, "git://%s/%s/%s" % (repo, j, unaccent(author)))
+
+if __name__ == "__main__":
+	os.chdir("/home/vmiklos/git/current")
+	sock = os.popen("git rev-list -1 HEAD")
+	patch = sock.readline().strip()
+	sock.close()
+	callback(patch)
