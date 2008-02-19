@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, time
+import os, time, sys
 
 first = True
 
@@ -18,6 +18,7 @@ def callback(patch):
 		try:
 			os.stat(".git/index.lock")
 			print "Waiting for lock to be released to do a 'git checkout'"
+			sys.stdout.flush()
 			time.sleep(1)
 		except OSError:
 			os.system("git checkout -f")
