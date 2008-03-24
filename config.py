@@ -1,4 +1,7 @@
 #!/usr/bin/env python
 
 class config:
-	enabled_plugins = ['cia', 'sendmail', 'checkout', 'synchook']
+	enabled_plugins = {
+			"post-receive": ['cia', 'sendmail', 'checkout', 'synchook'],
+			"pre-receive": ['detach']
+			}
