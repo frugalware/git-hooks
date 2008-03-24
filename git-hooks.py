@@ -30,7 +30,10 @@ if __name__ == "__main__":
 	sys.path.append("/usr/share/git-hooks")
 	from config import config as myconfig
 	old, new = read_stdin()
-	name = sys.argv[0].split('/')[1]
+	try:
+		name = sys.argv[1].split('/')[1]
+	except:
+		name = sys.argv[0].split('/')[1]
 	for i in myconfig.enabled_plugins[name]:
 		s = "%s.%s" % (i, i)
 		plugin = __import__(s)
