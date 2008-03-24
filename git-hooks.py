@@ -32,7 +32,7 @@ if __name__ == "__main__":
 	old, new = read_stdin()
 	name = sys.argv[0].split('/')[1]
 	if name == "home":
-		name = sys.argv[1].split('/')[1]
+		name = sys.argv[1]
 	for i in myconfig.enabled_plugins[name]:
 		s = "%s.%s" % (i, i)
 		plugin = __import__(s)
