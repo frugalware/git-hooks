@@ -24,7 +24,7 @@ def callback(patch):
 			ret = os.system("git symbolic-ref HEAD &>/dev/null")
 			if ret != 0:
 				# this is a detached head
-				os.system("git checkout -m master")
+				os.system("git checkout -m master 2>/dev/null")
 			else:
 				# we don't know where we are, need to
 				# check every checked out file

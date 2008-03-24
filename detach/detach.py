@@ -24,6 +24,6 @@ def callback(patch):
 			sock = os.popen("git-show-ref -h -s HEAD")
 			hash = sock.readline().strip()
 			sock.close()
-			os.system("git checkout -m %s" % hash)
+			os.system("git checkout -m %s 2>/dev/null" % hash)
 			return
 	print "WARNING: Timeout exceeded, checkout failed!"
