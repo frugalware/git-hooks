@@ -21,10 +21,16 @@ def tobuild(pkg):
 		return ret
 	# Build the command to read the FrugalBuilds
 	command = 'cd %s'
-	command += '; source /usr/lib/frugalware/fwmakepkg'
+	command += ' ; source /usr/lib/frugalware/fwmakepkg'
 	command += ' ; source FrugalBuild'
 	command += ' ; [ -n "${nobuild}" ] && exit'
-	command += ' ; echo ${options[@]} | grep -q nobuild && exit'
+	command += ' ; nobuild=0 ; if echo ${options[@]} | grep -q nobuild'
+	command += ' ; then i=0 ; for subpkg in "${subpkgs[@]}"'
+	command += ' ; do echo ${suboptions[$i]} | grep -q nobuild || break; nobuild=1'
+	command += ' ; done'
+	command += ' ; [ "${#subpkgs[@]}" == 0 ] && nobuild=1'
+	command += ' ; fi'
+	command += ' ; [ $nobuild == 1 ] && exit'
 	command += ' ; echo "${pkgname}-${pkgver}-${pkgrel}"'
 	command += ' ; echo "${archs[@]}"'
 	sock = os.popen(command % os.path.split(pkg)[0])
