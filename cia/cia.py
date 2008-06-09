@@ -33,8 +33,7 @@ def callback(patch):
 	url = ""
 	if config.gitweb_url:
 		url = "<url>%s?p=%s.git;a=commitdiff;h=%s</url>" % (config.gitweb_url, repo, patch)
-	refname = "master"
-	rev = patch[:12]
+	rev = patch[:7]
 	raw = readfrompipe("git cat-file commit " + patch)
 	for i in raw.split("\n"):
 		if i.startswith("author "):
@@ -60,7 +59,7 @@ def callback(patch):
 	<body>
 		<commit>
 			<author>%(author)s</author>
-			<!-- <revision>%(revision)s</revision> -->
+			<revision>%(revision)s</revision>
 			<files>
 				%(files)s
 			</files>
