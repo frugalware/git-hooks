@@ -21,7 +21,7 @@ def callback(patch):
 			sys.stdout.flush()
 			time.sleep(1)
 		except OSError:
-			sock = os.popen("git-show-ref -h -s HEAD")
+			sock = os.popen("git show-ref -h -s HEAD")
 			hash = sock.readline().strip()
 			sock.close()
 			os.system("git checkout -m %s 2>/dev/null" % hash)
