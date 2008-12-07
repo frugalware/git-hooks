@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-2 -*-
 
 import os, xmlrpclib, re
 from config import config
@@ -50,15 +49,12 @@ def tobuild(pkg):
 	return ret
 
 def unaccent(s):
-	ret = []
-	fro = "¡…Õ”÷’⁄‹€·ÈÌÛˆı˙¸˚"
-	to = "AEIOOOUUUaeiooouuu"
-	for i in s:
-		if i in fro:
-			ret.append(to[fro.index(i)])
-		else:
-			ret.append(i)
-	return "".join(ret)
+	ret = s
+	rep = {"\xc1":"A", "\xc9":"E", "\xcd":"I", "\xd3":"O", "\xd6":"O", "\xd5":"O", "\xda":"U", "\xdc":"U", "\xdb":"U", "\xe1":"a", "\xe9":"e", "\xed":"i", "\xf3":"o", "\xf6":"o", "\xf5":"o", "\xfa":"u", "\xfc":"u", "\xfb":"u",
+			"\xc3\x81":"A", "\xc3\x89":"E", "\xc3\x8d":"I", "\xc3\x93":"O", "\xc3\x96":"O", "\xc5\x90":"O", "\xc3\x9a":"U", "\xc3\x9c":"U", "\xc5\xb0":"U", "\xc3\xa1":"a", "\xc3\xa9":"e", "\xc3\xad":"i", "\xc3\xb3":"o", "\xc3\xb6":"o", "\xc5\x91":"o", "\xc3\xba":"u", "\xc3\xbc":"u", "\xc5\xb1":"u"}
+	for k, v in rep.items():
+		ret = ret.replace(k, v)
+	return ret
 
 def callback(patch):
 	global config
