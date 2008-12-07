@@ -2,6 +2,9 @@
 
 import os, sys
 
+sys = reload(sys)
+sys.setdefaultencoding("utf-8")
+
 def run_hook(callback, old, new):
 	if old == "0000000000000000000000000000000000000000":
 		sys.exit(0)
