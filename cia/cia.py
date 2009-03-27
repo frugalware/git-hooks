@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-2 -*-
 
-import os, xmlrpclib, timeoutsocket, cgi, mxw
+import os, xmlrpclib, cgi, mxw
 from xml.sax import saxutils
 from config import config
 
@@ -87,11 +87,8 @@ def callback(patch):
 			print "Can't notify mxw_ (%s)" % s
 
 	if config.post:
-		timeoutsocket.setDefaultSocketTimeout(20)
 		try:
 			xmlrpclib.ServerProxy(config.rpc_uri).hub.deliver(msg)
-		except timeoutsocket.Timeout:
-			print "Not notifying CIA, connection timed out."
 		except Exception, s:
 			print "Can't notify CIA (%s)" % s
 	else:
