@@ -8,6 +8,13 @@ sys.setdefaultencoding("utf-8")
 def run_hook(callback, old, new):
 	if old == "0000000000000000000000000000000000000000":
 		sys.exit(0)
+	ret = os.system("git rev-parse -q --verify %s^2 >/dev/null" % new)
+	if ret == 0:
+		# this is a merge, we just want to accounce the merge
+		# commit
+		callback(new.strip())
+		return
+
 	sock = os.popen("git rev-list %s..%s" % (old, new))
 	hashes = sock.readlines()
 	sock.close()
