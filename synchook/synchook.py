@@ -70,7 +70,7 @@ def callback(patch):
 			for j in tobuild(i):
 				repo = repo.replace("frugalware-", "")
 				# hardwiring this is ugly
-				repo = repo.replace("0.9", "stable")
+				repo = repo.replace("1.0", "stable")
 				server.request_build(config.server_user, config.server_pass, "git://%s/%s/%s" % (repo, j, unaccent(author)))
 
 if __name__ == "__main__":
