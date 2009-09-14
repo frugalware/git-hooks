@@ -25,7 +25,7 @@ def readfrompipe(cmd):
 	sock.close()
 	return ret
 
-def callback(patch):
+def callback(patch, merge):
 	global config
 	repo = os.getcwd().split("/")[-1]
 	if repo == ".git":

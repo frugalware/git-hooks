@@ -56,7 +56,7 @@ def unaccent(s):
 		ret = ret.replace(k, v)
 	return ret
 
-def callback(patch):
+def callback(patch, merge):
 	global config
 	repo = os.getcwd().split("/")[-1]
 	if repo == ".git":

@@ -3,10 +3,14 @@
 import os, smtplib
 from config import config
 
-def callback(hash):
+def callback(hash, merge):
 	global config
 	msg = []
 	repo = os.getcwd().split("/")[-1]
+
+	if merge:
+		return
+
 	if repo == ".git":
 		repo = os.getcwd().split("/")[-2]
 	sock = os.popen('git log -1 --pretty=format:"%s" ' + hash)

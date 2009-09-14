@@ -10,18 +10,24 @@ def run_hook(callback, old, new):
 		sys.exit(0)
 	ret = os.system("git rev-parse -q --verify %s^2 >/dev/null" % new)
 	if ret == 0:
-		# this is a merge, we just want to accounce the merge
-		# commit
-		callback(new.strip())
-		return
+		merge = True
+	else:
+		merge = False
 
 	sock = os.popen("git rev-list %s..%s" % (old, new))
 	hashes = sock.readlines()
 	sock.close()
 	hashes.reverse()
 
+	first = True
 	for i in hashes:
-		callback(i.strip())
+		# the second parameter is true, if this is a commit of a
+		# merge (ie. if it's true, then the sendmail script
+		# won't send it out, so that only the merge commit is
+		# mailed after a merge)
+		callback(i.strip(), merge and not first)
+		if first:
+			first = False
 
 def read_stdin():
 	# currently we don't care about !master branches

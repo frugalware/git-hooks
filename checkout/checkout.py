@@ -4,7 +4,7 @@ import os, time, sys
 
 first = True
 
-def callback(patch):
+def callback(patch, merge):
 	global first
 
 	if not first:
