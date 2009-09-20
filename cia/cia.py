@@ -28,6 +28,10 @@ def readfrompipe(cmd):
 def callback(patch, merge):
 	global config
 	repo = os.getcwd().split("/")[-1]
+
+	if merge:
+		return
+
 	if repo == ".git":
 		repo = os.getcwd().split("/")[-2]
 	url = ""
