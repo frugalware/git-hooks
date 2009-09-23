@@ -55,6 +55,7 @@ def callback(patch, merge):
 			tofile = os.path.join(todir, os.path.split(i)[1])
 			print "Moving untracked file: %s -> %s" % (i, tofile)
 			os.rename(i, tofile)
+		print "Removing empty dir %s" % frodir
 		os.rmdir(frodir)
 
 if __name__ == "__main__":
