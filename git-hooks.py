@@ -19,15 +19,13 @@ def run_hook(callback, old, new):
 	sock.close()
 	hashes.reverse()
 
-	first = True
 	for i in hashes:
 		# the second parameter is true, if this is a commit of a
 		# merge (ie. if it's true, then the sendmail script
 		# won't send it out, so that only the merge commit is
 		# mailed after a merge)
-		callback(i.strip(), merge and not first)
-		if first:
-			first = False
+		last = i == hashes[-1]
+		callback(i.strip(), merge and not last)
 
 def read_stdin():
 	# currently we don't care about !master branches
