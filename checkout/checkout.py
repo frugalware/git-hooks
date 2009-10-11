@@ -7,6 +7,9 @@ first = True
 def callback(patch, merge):
 	global first
 
+	if merge:
+		return
+
 	timeout = True
 	if first:
 		first = False
