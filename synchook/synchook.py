@@ -21,7 +21,7 @@ def tobuild(pkg):
 	# Build the command to read the FrugalBuilds
 	command = 'cd %s'
 	command += ' ; source /usr/lib/frugalware/fwmakepkg'
-	command += ' ; source FrugalBuild'
+	command += ' ; source ./FrugalBuild'
 	command += ' ; [ -n "${nobuild}" ] && exit'
 	command += ' ; nobuild=0 ; if echo ${options[@]} | grep -q nobuild'
 	command += ' ; then i=0 ; for subpkg in "${subpkgs[@]}"'
