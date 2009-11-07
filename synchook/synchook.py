@@ -58,6 +58,15 @@ def unaccent(s):
 
 def callback(patch, merge):
 	global config
+
+	if merge:
+		repo = os.getcwd().split('/')[-2]
+		try:
+			repo.split('-')[1]
+		except IndexError:
+			# this is some not frugalware-foo repo, just skip it
+			return
+
 	repo = os.getcwd().split("/")[-1]
 	if repo == ".git":
 		repo = os.getcwd().split("/")[-2]
