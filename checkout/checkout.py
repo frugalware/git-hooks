@@ -27,7 +27,7 @@ def callback(patch, merge):
 				ret = os.system("git symbolic-ref HEAD &>/dev/null")
 				if ret != 0:
 					# this is a detached head
-					os.system("git checkout -m master 2>/dev/null")
+					os.system(r"git checkout -m $(git log -g -1|grep 'moving from'|sed 's/.*from \(.*\) to .*/\1/') 2>/dev/null")
 				else:
 					# we don't know where we are, need to
 					# check every checked out file
