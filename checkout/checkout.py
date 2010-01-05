@@ -53,6 +53,7 @@ def callback(patch, merge):
 		todir = os.path.sep.join(to.split(os.path.sep)[1:-1])
 		break
 	if pkgmove:
+		cwd = os.getcwd()
 		os.chdir("source")
 		for i in glob.glob(frodir+os.path.sep+"*"):
 			tofile = os.path.join(todir, os.path.split(i)[1])
@@ -60,6 +61,7 @@ def callback(patch, merge):
 			os.rename(i, tofile)
 		print "Removing empty dir %s" % frodir
 		os.rmdir(frodir)
+		os.chdir(cwd)
 
 if __name__ == "__main__":
 	os.chdir("/home/vmiklos/git/current/.git")
