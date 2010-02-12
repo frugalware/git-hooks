@@ -56,7 +56,7 @@ def unaccent(s):
 		ret = ret.replace(k, v)
 	return ret
 
-def callback(patch, merge):
+def callback(patch, merge, ref):
 	global config
 
 	if merge:
@@ -66,6 +66,9 @@ def callback(patch, merge):
 		except IndexError:
 			# this is some not frugalware-foo repo, just skip it
 			return
+
+	if ref != "refs/heads/master":
+		return
 
 	repo = os.getcwd().split("/")[-1]
 	if repo == ".git":

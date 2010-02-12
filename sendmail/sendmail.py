@@ -3,12 +3,15 @@
 import os, smtplib
 from config import config
 
-def callback(hash, merge):
+def callback(hash, merge, ref):
 	global config
 	msg = []
 	repo = os.getcwd().split("/")[-1]
 
 	if merge:
+		return
+
+	if ref != "refs/heads/master":
 		return
 
 	if repo == ".git":

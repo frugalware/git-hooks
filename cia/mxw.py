@@ -82,6 +82,7 @@ def handleFiles(files):
 def sendCommit(commitstr, sockpath):
 	xml = minidom.parseString(commitstr)
 	author = saxutils.unescape(xml.getElementsByTagName('author')[0].firstChild.toxml())
+	branch = saxutils.unescape(xml.getElementsByTagName('branch')[0].firstChild.toxml())
 	revision = saxutils.unescape(xml.getElementsByTagName('revision')[0].firstChild.toxml())
 	files = []
 	for i in xml.getElementsByTagName('file'):
@@ -89,7 +90,7 @@ def sendCommit(commitstr, sockpath):
 	module = saxutils.unescape(xml.getElementsByTagName('module')[0].firstChild.toxml())
 	log = saxutils.unescape(xml.getElementsByTagName('log')[0].firstChild.toxml()).replace('&quot;', r'\"')
 	lines = []
-	lines.append("03%s * %s 10%s/%s:" % (author, revision, module, handleFiles(files)))
+	lines.append("03%s 7%s * %s 10%s/%s:" % (author, branch, revision, module, handleFiles(files)))
 	lines.extend(log.split('\n'))
 
 	client = socket.socket ( socket.AF_UNIX, socket.SOCK_DGRAM )

@@ -4,10 +4,12 @@ import os, time, sys
 
 first = True
 
-def callback(patch, merge):
+def callback(patch, merge, ref):
 	global first
 
 	if not first:
+		return
+	if ref != "refs/heads/master":
 		return
 	first = False
 	os.chdir("..")

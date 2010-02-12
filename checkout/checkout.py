@@ -4,10 +4,13 @@ import os, time, sys, glob
 
 first = True
 
-def callback(patch, merge):
+def callback(patch, merge, ref):
 	global first
 
 	if merge:
+		return
+
+	if ref != "refs/heads/master":
 		return
 
 	timeout = True

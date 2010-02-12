@@ -25,7 +25,7 @@ def readfrompipe(cmd):
 	sock.close()
 	return ret
 
-def callback(patch, merge):
+def callback(patch, merge, ref):
 	global config
 	repo = os.getcwd().split("/")[-1]
 
@@ -47,6 +47,8 @@ def callback(patch, merge):
 	files = []
 	for i in readfrompipe("git diff-tree -r --name-only " + patch).split("\n")[1:]:
 		files.append("<file>%s</file>" % i.strip())
+	
+	branch = ref.replace('refs/heads/', '').strip()
 
 	msg = """<?xml version="1.0" ?>
 <message>
@@ -58,6 +60,7 @@ def callback(patch, merge):
 	<source>
 		<project>%(project)s</project>
 		<module>%(module)s</module>
+		<branch>%(branch)s</branch>
 	</source>
 	<timestamp>%(timestamp)s</timestamp>
 	<body>
@@ -77,6 +80,7 @@ def callback(patch, merge):
 		'url': __url__,
 		'project': config.project,
 		'module': repo,
+		'branch': branch,
 		'timestamp': ts,
 		'author': author,
 		'revision': rev,
