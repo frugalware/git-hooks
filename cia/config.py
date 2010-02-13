@@ -11,3 +11,4 @@ class config:
 	# will be performed
 	post = True
 	sockpath = "/home/ftp/pub/other/people/vmiklos/mxw/mxw2.sock"
+	timeout = 3

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-2 -*-
 
-import os, xmlrpclib, cgi, mxw
+import os, xmlrpclib, cgi, mxw, socket
 from xml.sax import saxutils
 from config import config
 
@@ -96,6 +96,7 @@ def callback(patch, merge, ref):
 
 	if config.post:
 		try:
+			socket.setdefaulttimeout(config.timeout)
 			xmlrpclib.ServerProxy(config.rpc_uri).hub.deliver(msg)
 		except Exception, s:
 			print "Can't notify CIA (%s)" % s
