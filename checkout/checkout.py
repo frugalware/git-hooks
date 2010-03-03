@@ -16,6 +16,7 @@ def callback(patch, merge, ref):
 	timeout = True
 	if first:
 		first = False
+		cwd = os.getcwd()
 		os.chdir("..")
 		if "GIT_DIR" in os.environ.keys():
 			del os.environ['GIT_DIR']
@@ -39,6 +40,7 @@ def callback(patch, merge, ref):
 				break
 		if timeout:
 			print "WARNING: Timeout exceeded, checkout failed!"
+		os.chdir(cwd)
 
 	# now handle pkg renames
 	sock = os.popen("git diff-tree -r %s -M --name-status --diff-filter=R" % patch)
