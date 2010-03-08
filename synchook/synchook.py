@@ -70,10 +70,13 @@ def callback(patch, merge, ref):
 	if ref != "refs/heads/master":
 		return
 
+	cwd = os.getcwd()
+	os.chdir("..")
 	repo = os.getcwd().split("/")[-1]
 	if repo == ".git":
 		repo = os.getcwd().split("/")[-2]
 	if repo not in config.repos:
+		os.chdir(cwd)
 		return
 	server = xmlrpclib.Server(config.server_url)
 	author = readfrompipe('git show --pretty=format:"%an <%ae>" ' + patch).split("\n")[0]
@@ -84,10 +87,11 @@ def callback(patch, merge, ref):
 				# hardwiring this is ugly
 				repo = repo.replace(os.readlink("/pub/frugalware/frugalware-stable").split('-')[1], "stable")
 				server.request_build(config.server_user, config.server_pass, "git://%s/%s/%s" % (repo, j, unaccent(author)))
+	os.chdir(cwd)
 
 if __name__ == "__main__":
-	os.chdir("/home/vmiklos/git/current")
+	os.chdir("/home/ftp/pub/frugalware/frugalware-current/.git")
 	sock = os.popen("git rev-list -1 HEAD")
 	patch = sock.readline().strip()
 	sock.close()
-	callback(patch)
+	callback(patch, False, "refs/heads/master")
