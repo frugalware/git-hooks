@@ -59,7 +59,7 @@ def callback(patch, merge, ref):
 		break
 	if pkgmove:
 		cwd = os.getcwd()
-		os.chdir("source")
+		os.chdir(os.path.join("..", "source"))
 		for i in glob.glob(frodir+os.path.sep+"*"):
 			tofile = os.path.join(todir, os.path.split(i)[1])
 			print "Moving untracked file: %s -> %s" % (i, tofile)
