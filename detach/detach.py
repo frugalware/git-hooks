@@ -12,6 +12,7 @@ def callback(patch, merge, ref):
 	if ref != "refs/heads/master":
 		return
 	first = False
+	cwd = os.getcwd()
 	os.chdir("..")
 	if "GIT_DIR" in os.environ.keys():
 		del os.environ['GIT_DIR']
@@ -27,5 +28,7 @@ def callback(patch, merge, ref):
 			hash = sock.readline().strip()
 			sock.close()
 			os.system("git checkout -m %s 2>/dev/null" % hash)
+			os.chdir(cwd)
 			return
 	print "WARNING: Timeout exceeded, checkout failed!"
+	os.chdir(cwd)
