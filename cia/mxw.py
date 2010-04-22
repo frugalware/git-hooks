@@ -91,7 +91,7 @@ def sendCommit(commitstr, sockpath):
 	log = saxutils.unescape(xml.getElementsByTagName('log')[0].firstChild.toxml()).replace('&quot;', r'\"')
 	lines = []
 	lines.append("03%s 7%s * %s 10%s/%s:" % (author, branch, revision, module, handleFiles(files)))
-	lines.extend(log.split('\n'))
+	lines.extend(log.replace('\t', '        ').split('\n'))
 
 	client = socket.socket ( socket.AF_UNIX, socket.SOCK_DGRAM )
 	client.connect (sockpath)
