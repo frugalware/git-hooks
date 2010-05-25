@@ -60,6 +60,7 @@ def callback(patch, merge, ref):
 	global config
 
 	if merge:
+		# we skip merges only in wip repos!
 		repo = os.getcwd().split('/')[-2]
 		try:
 			repo.split('-')[1]
