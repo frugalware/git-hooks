@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if ! [ "$1" = "-u" -a "$3" = "git-receive-pack" ] && ! [ "$1 $2 $3 $5 $6" = "-E -H -u repoman server" ]; then
+	echo "fatal: you can use sudo for 'git-receive-pack' and 'repoman server' only"
+	exit 1
+fi
+
+exec /usr/bin/sudo "$@"
