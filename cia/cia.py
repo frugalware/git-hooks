@@ -93,12 +93,3 @@ def callback(patch, merge, ref):
 		mxw.sendCommit(msg, config.sockpath)
 	except Exception, s:
 			print "Can't notify mxw_ (%s)" % s
-
-	if config.post:
-		try:
-			socket.setdefaulttimeout(config.timeout)
-			xmlrpclib.ServerProxy(config.rpc_uri).hub.deliver(msg)
-		except Exception, s:
-			print "Can't notify CIA (%s)" % s
-	else:
-		print msg

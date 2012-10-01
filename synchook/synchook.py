@@ -85,8 +85,9 @@ def callback(patch, merge, ref):
 		if re.match("^source/[^/]+/[^/]+/FrugalBuild$", i):
 			for j in tobuild(i):
 				repo = repo.replace("frugalware-", "")
-				# hardwiring this is ugly
+				# hardwiring these is ugly
 				repo = repo.replace(os.readlink("/pub/frugalware/frugalware-stable").split('-')[1].strip('/'), "stable")
+				repo = repo.replace("1.7", "gaia")
 				server.request_build(config.server_user, config.server_pass, "git://%s/%s/%s" % (repo, j, unaccent(author)))
 	os.chdir(cwd)
 
