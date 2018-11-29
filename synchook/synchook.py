@@ -4,7 +4,7 @@ import os, xmlrpclib, re
 from config import config
 
 __version__ = "0.1.0"
-__url__ = "http://ftp.frugalware.org/pub/other/git-hooks"
+__url__ = "https://ftp.frugalware.org/pub/other/git-hooks"
 
 def readfrompipe(cmd):
 	sock = os.popen(cmd)
@@ -89,7 +89,7 @@ def callback(patch, merge, ref):
 	os.chdir(cwd)
 
 if __name__ == "__main__":
-	os.chdir("/home/ftp/pub/frugalware/frugalware-current/.git")
+	os.chdir("/srv/ftp/pub/frugalware/frugalware-current/.git")
 	sock = os.popen("git rev-list -1 HEAD")
 	patch = sock.readline().strip()
 	sock.close()
