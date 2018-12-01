@@ -4,7 +4,7 @@ import os, xmlrpclib, re
 from config import config
 
 __version__ = "0.1.0"
-__url__ = "https://ftp.frugalware.org/pub/other/git-hooks"
+__url__ = "http://ftp.frugalware.org/pub/other/git-hooks"
 
 def readfrompipe(cmd):
 	sock = os.popen(cmd)

@@ -7,4 +7,4 @@ class config:
 	server_user = "synchook-git"
 	server_pass = "pass"
 	repos = ['frugalware-current']
-	archs = ['i686', 'x86_64']
+	archs = ['x86_64']
