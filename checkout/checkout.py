@@ -69,7 +69,7 @@ def callback(patch, merge, ref):
 		os.chdir(cwd)
 
 if __name__ == "__main__":
-	os.chdir("/home/vmiklos/git/current/.git")
+	os.chdir("/srv/ftp/pub/frugalware/frugalware-current/.git")
 	sock = os.popen("git rev-list -1 HEAD")
 	patch = sock.readline().strip()
 	sock.close()
