@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os, smtplib
-from config import config
+from .config import config
 
 def callback(hash, merge, ref):
 	global config
@@ -39,8 +39,8 @@ def callback(hash, merge, ref):
 		server = smtplib.SMTP('localhost')
 		try:
 			server.sendmail(fro, to, "\n".join(msg))
-		except Exception, s:
-				print "Can't send mail (%s)" % s
+		except Exception as s:
+				print("Can't send mail (%s)" % s)
 		server.quit()
 	else:
-		print "\n".join(msg)
+		print("\n".join(msg))
