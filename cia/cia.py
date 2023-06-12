@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-2 -*-
 
-import os, xmlrpclib, cgi, mxw, socket
+import os, xmlrpc.client, socket
 from xml.sax import saxutils
-from config import config
+from .config import config
+from . import mxw
+from html import escape
 
 __version__ = "0.1.0"
 __url__ = "http://ftp.frugalware.org/pub/other/git-hooks"
@@ -41,9 +43,9 @@ def callback(patch, merge, ref):
 	raw = readfrompipe("git cat-file commit " + patch)
 	for i in raw.split("\n"):
 		if i.startswith("author "):
-			author = cgi.escape(unaccent(" ".join(i[len("author "):].split(" ")[:-2])))
+			author = escape(unaccent(" ".join(i[len("author "):].split(" ")[:-2])))
 			ts = i[len("author "):].split(" ")[-2]
-	logmessage = cgi.escape("\n\n".join(raw.split("\n\n")[1:]))
+	logmessage = escape("\n\n".join(raw.split("\n\n")[1:]))
 	files = []
 	for i in readfrompipe("git diff-tree -r --name-only " + patch).split("\n")[1:]:
 		files.append("<file>%s</file>" % i.strip())
@@ -91,5 +93,5 @@ def callback(patch, merge, ref):
 
 	try:
 		mxw.sendCommit(msg, config.sockpath)
-	except Exception, s:
-			print "Can't notify mxw_ (%s)" % s
+	except Exception as s:
+			print("Can't notify mxw_ (%s)" % s)

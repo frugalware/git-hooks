@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import os, xmlrpclib, re
-from config import config
+import os, xmlrpc.client, re
+from .config import config
 
 __version__ = "0.1.0"
 __url__ = "http://ftp.frugalware.org/pub/other/git-hooks"
@@ -52,7 +52,7 @@ def unaccent(s):
 	ret = s
 	rep = {"\xc1":"A", "\xc9":"E", "\xcd":"I", "\xd3":"O", "\xd6":"O", "\xd5":"O", "\xda":"U", "\xdc":"U", "\xdb":"U", "\xe1":"a", "\xe9":"e", "\xed":"i", "\xf3":"o", "\xf6":"o", "\xf5":"o", "\xfa":"u", "\xfc":"u", "\xfb":"u",
 			"\xc3\x81":"A", "\xc3\x89":"E", "\xc3\x8d":"I", "\xc3\x93":"O", "\xc3\x96":"O", "\xc5\x90":"O", "\xc3\x9a":"U", "\xc3\x9c":"U", "\xc5\xb0":"U", "\xc3\xa1":"a", "\xc3\xa9":"e", "\xc3\xad":"i", "\xc3\xb3":"o", "\xc3\xb6":"o", "\xc5\x91":"o", "\xc3\xba":"u", "\xc3\xbc":"u", "\xc5\xb1":"u"}
-	for k, v in rep.items():
+	for k, v in list(rep.items()):
 		ret = ret.replace(k, v)
 	return ret
 
@@ -79,7 +79,7 @@ def callback(patch, merge, ref):
 	if repo not in config.repos:
 		os.chdir(cwd)
 		return
-	server = xmlrpclib.Server(config.server_url)
+	server = xmlrpc.client.Server(config.server_url)
 	author = readfrompipe('git show --pretty=format:"%an <%ae>" ' + patch).split("\n")[0]
 	for i in readfrompipe("git diff-tree -r --name-only " + patch).split("\n")[1:]:
 		if re.match("^source/[^/]+/[^/]+/FrugalBuild$", i):

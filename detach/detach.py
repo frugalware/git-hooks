@@ -20,7 +20,7 @@ def callback(patch, merge, ref):
 	for i in range(limit):
 		try:
 			os.stat(".git/index.lock")
-			print "Waiting for lock to be released to do a 'git checkout'"
+			print("Waiting for lock to be released to do a 'git checkout'")
 			sys.stdout.flush()
 			time.sleep(1)
 		except OSError:
@@ -30,5 +30,5 @@ def callback(patch, merge, ref):
 			os.system("git checkout -m %s 2>/dev/null" % hash)
 			os.chdir(cwd)
 			return
-	print "WARNING: Timeout exceeded, checkout failed!"
+	print("WARNING: Timeout exceeded, checkout failed!")
 	os.chdir(cwd)

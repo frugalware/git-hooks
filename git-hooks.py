@@ -2,8 +2,8 @@
 
 import os, sys
 
-sys = reload(sys)
-sys.setdefaultencoding("utf-8")
+import importlib
+importlib.reload(sys)
 
 def run_hook(callback, old, new, ref):
 	if old == "0000000000000000000000000000000000000000":
@@ -43,5 +43,5 @@ if __name__ == "__main__":
 				plugin = getattr(plugin, j)
 			try:
 				run_hook(plugin.callback, old, new, ref.strip())
-			except Exception, s:
-					print "Can't run plugin '%s' (%s)" % (i, s)
+			except Exception as s:
+					print("Can't run plugin '%s' (%s)" % (i, s))

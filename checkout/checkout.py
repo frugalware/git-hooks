@@ -18,13 +18,13 @@ def callback(patch, merge, ref):
 		first = False
 		cwd = os.getcwd()
 		os.chdir("..")
-		if "GIT_DIR" in os.environ.keys():
+		if "GIT_DIR" in list(os.environ.keys()):
 			del os.environ['GIT_DIR']
 		limit = 300
 		for i in range(limit):
 			try:
 				os.stat(".git/index.lock")
-				print "Waiting for lock to be released to do a 'git checkout'"
+				print("Waiting for lock to be released to do a 'git checkout'")
 				sys.stdout.flush()
 				time.sleep(1)
 			except OSError:
@@ -39,7 +39,7 @@ def callback(patch, merge, ref):
 				timeout = False
 				break
 		if timeout:
-			print "WARNING: Timeout exceeded, checkout failed!"
+			print("WARNING: Timeout exceeded, checkout failed!")
 		os.chdir(cwd)
 
 	# now handle pkg renames
@@ -62,9 +62,9 @@ def callback(patch, merge, ref):
 		os.chdir(os.path.join("..", "source"))
 		for i in glob.glob(frodir+os.path.sep+"*"):
 			tofile = os.path.join(todir, os.path.split(i)[1])
-			print "Moving untracked file: %s -> %s" % (i, tofile)
+			print("Moving untracked file: %s -> %s" % (i, tofile))
 			os.rename(i, tofile)
-		print "Removing empty dir %s" % frodir
+		print("Removing empty dir %s" % frodir)
 		os.rmdir(frodir)
 		os.chdir(cwd)
 
