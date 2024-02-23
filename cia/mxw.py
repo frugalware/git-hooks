@@ -95,5 +95,5 @@ def sendCommit(commitstr, sockpath):
 
 	client = socket.socket ( socket.AF_UNIX, socket.SOCK_DGRAM )
 	client.connect (sockpath)
-	client.send ("\n".join(["""c.privmsg("#frugalware.dev", "%s")""" % i for i in lines]))
+	client.send ("\n".join(["""c.privmsg("#frugalware.dev", "%s")""" % i for i in lines]).encode('utf-8'))
 	client.close()
